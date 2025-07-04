@@ -95,7 +95,7 @@ function Transaction() {
             className="p-1  focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-gray-900 rounded-lg"
           />
         </form>
-        <button className="bg-green-700 text-white p-2 ml-2 rounded-lg cursor-pointer hover:bg-green-800"
+        <button className="bg-blue-700 text-white p-2 ml-2 rounded-lg cursor-pointer hover:bg-blue-800"
         onClick={()=>{
           setsortedData(transactions)
           setterm("")}}
