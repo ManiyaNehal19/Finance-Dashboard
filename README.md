@@ -67,9 +67,8 @@ A feature-rich personal finance application designed to help users manage budget
    npm run build
    ```
 
-> If using a full-stack setup, include separate setup instructions for frontend and backend folders.
 
-## 📁 Folder Structure (Example)
+## 📁 Folder Structure 
 
 ```
 /public
