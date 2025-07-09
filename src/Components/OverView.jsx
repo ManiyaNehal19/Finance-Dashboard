@@ -66,7 +66,7 @@ function OverView() {
       </div>
       
 
-      <div className="col-span-5 row-span-3 bg-purple-400  bg-stone-100 rounded-lg p-2 ">
+      <div className="col-span-5 row-span-3 bg-stone-100 rounded-lg p-2 ">
 
       <div className='flex items-center justify-between mr-1 ml-1'>
           <h1 className='font-bold text-2xl mb-2'>Budget</h1>
