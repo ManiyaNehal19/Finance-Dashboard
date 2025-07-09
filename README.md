@@ -1,12 +1,89 @@
-# React + Vite
+# 💸 Personal Finance App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A feature-rich personal finance application designed to help users manage budgets, savings pots, transactions, and recurring bills — all through an intuitive, responsive, and accessible interface.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+### ✅ Core Functionality
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* **Overview Page**
+
+  * View a summary of personal finances at a glance.
+
+* **Transactions Page**
+
+  * List of all transactions with pagination (10 per page).
+  * Sort, search, and filter transactions.
+
+* **Budgets & Saving Pots**
+
+  * Perform full **CRUD** operations on both budgets and pots.
+  * View latest three transactions for each budget.
+  * Track progress of each savings pot.
+  * Add or withdraw money from pots.
+
+* **Recurring Bills**
+
+  * View all recurring bills and their status for the current month.
+  * Search and sort bills for easy tracking.
+
+### ✨ User Experience
+
+* Form validation and error messaging.
+* Hover and focus states for all interactive elements.
+
+
+## 🗂️ Technologies Used
+
+
+* **Frontend:** React.js, Tailwind CSS, React Router
+* **State Management:** Context API or Redux
+
+## 🛠️ Setup Instructions
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/yourusername/personal-finance-app.git
+   cd personal-finance-app
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+4. **To build the app**
+
+   ```bash
+   npm run build
+   ```
+
+> If using a full-stack setup, include separate setup instructions for frontend and backend folders.
+
+## 📁 Folder Structure (Example)
+
+```
+/public
+/src
+ ┣ /components
+ ┣ /utils
+ ┣ /data
+ ┣ /contexts
+ ┣ /assets
+ ┣ App.jsx
+ ┣ index.js
+
+README.md
+```
+
+---
+
