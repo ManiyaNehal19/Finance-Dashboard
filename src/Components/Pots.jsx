@@ -3,17 +3,17 @@ import ProgressBar from '../Utils/ProgressBar.jsx';
 import ErrorPopup from '../Utils/ErrorPopUp.jsx';
 import delete_btn from '../assets/dustbin.png';
 import edit from '../assets/pen.png';
+import { AppContext } from '../Context/AppContext.jsx'; 
+import { useContext } from 'react';
+
+
 
 function Pots() {
   function calculateProgress(spent, total) {
     return total ? (spent / total) * 100 : 0;
   }
 
-  const [PotsArr, setPotsArr] = useState(() => {
-    const saved = localStorage.getItem("PotsArr");
-    const parsed = saved ? JSON.parse(saved) : [];
-    return parsed.map(item => ({ ...item }));
-  });
+  const {PotsArr, setPotsArr} = useContext(AppContext);
 
   useEffect(() => {
     const dataToSave = PotsArr.map(({ name, total, saved }) => ({ name, total, saved }));

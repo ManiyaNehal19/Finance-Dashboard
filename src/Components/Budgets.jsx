@@ -3,6 +3,9 @@ import transactions from "../Data/transaction.js";
 import ProgressBar from '../Utils/ProgressBar.jsx';
 import delete_btn from '../assets/dustbin.png'
 import edit from '../assets/pen.png'
+import { AppContext } from '../Context/AppContext.jsx'; 
+import { useContext } from 'react';
+
 
 function Budgets() {
   const add_spent = (name) => {
@@ -19,14 +22,7 @@ function Budgets() {
     return total
   }
 
-  const [budget_array, setBugetArr] = useState(() => {
-    const saved = localStorage.getItem("budgetArr");
-    const parsed = saved ? JSON.parse(saved) : [];
-    return parsed.map(item => ({
-      ...item,
-      spent: add_spent(item.name)
-    }));
-  });
+  const {budget_array, setBugetArr }= useContext(AppContext);
   
   useEffect(() => {
     const dataToSave = budget_array.map(({ name, total }) => ({ name, total }));

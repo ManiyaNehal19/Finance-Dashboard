@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import filter from '../assets/filter.png'
+import delete_btn from '../assets/dustbin.png'
+import edit from '../assets/pen.png'
+import { AppContext } from '../Context/AppContext.jsx'; 
+import { useContext } from 'react';
 
 function RecurrBill() {
   //use switch case for tabs + sort and handling as well 
@@ -10,13 +14,17 @@ function RecurrBill() {
   const [showDialog, setshowDialog] = useState(false);
   const [billName, setbillName] = useState('');
   const [billTotal, setbillTotal] = useState('');
+  const [searchedTerm, setterm] = useState("");
   const [billDate, setbillDate] = useState();
-  const [BillArr, setBillArr] = useState([{
-    name:"Wifi",
-    amount: 1000,
-    due: "2025-07-09",
-    status: false
-  }])
+  const [editBillName, setEditBillName] = useState('');
+  const [editBillTotal, setEditBillTotal] = useState('');
+  const [editBillDate, setEditBillDate] = useState('')
+  const [updateshowDialog, setupdateshowDialog] = useState(false);
+  const { BillArr, setBillArr } = useContext(AppContext);
+  useEffect(() => {
+    const dataToSave = BillArr.map(({ name, amount, due, status }) => ({ name, amount, due, status }));
+    localStorage.setItem("billArr", JSON.stringify(dataToSave));
+  }, [BillArr]);
   const [filteredArr, setFilteredArr] = useState(BillArr)
 
   useEffect(()=>{
@@ -45,13 +53,63 @@ function RecurrBill() {
         const unpaid = BillArr.filter(item=>(item.status===false));
         setFilteredArr(unpaid);
         break
-      case "UPCOMING":
-        const today= new Date();
-        const upcoming = BillArr.filter(item=>( item.due>today &&item.status===false));
-        setFilteredArr(upcoming);
-        break
+        case "UPCOMING":
+          const today = new Date();
+          const upcoming = BillArr.filter(item => {
+            const dueDate = new Date(item.due);
+            return dueDate > today && item.status === false;
+          });
+          console.log("upcoming", upcoming);
+          setFilteredArr(upcoming);
+          break;
     }
   },[currTab,BillArr])
+  function handle_sort(value){
+    console.log(value);
+    switch (value) {
+      case "amount-rec":
+        const sort_rec = BillArr.filter((data)=> data.type==="received")
+        setFilteredArr(sort_rec);
+        break;
+      case "amount-sent":
+        const sort_sent = BillArr.filter((data)=> data.type==="sent")
+        setFilteredArr(sort_sent);
+        break;
+      case "name-asc":
+        const name_Asc = [...BillArr].sort((a,b)=> a.name.localeCompare(b.name));
+        setFilteredArr(name_Asc);
+        break;
+      case "name-desc":
+        const name_desc = [...BillArr].sort((a,b)=> b.name.localeCompare(a.name));
+        setFilteredArr(name_desc);
+        break;
+      case "amount-asc":
+        const amount_asc = [...BillArr].sort((a,b)=>a.amount-b.amount);
+        setFilteredArr(amount_asc);
+        break;
+      case "amount-desc":
+        const amount_desc = [...BillArr].sort((a,b)=>b.amount-a.amount);
+        setFilteredArr(amount_desc);
+        break;
+      case "date-newest":
+        const date_newest = [...BillArr].sort((a,b)=>new Date(b.date)-new Date(a.date));
+        setFilteredArr(date_newest);
+        break;
+      case "date-oldest":
+        const date_oldest = [...BillArr].sort((a,b)=>new Date(a.date)-new Date(b.date));
+        setFilteredArr(date_oldest);
+        break;
+
+    }
+  }
+  function handle_search(name){
+    if(name){
+    const searched = BillArr.filter((data)=> data.name.toLowerCase()===name.toLowerCase());
+    setFilteredArr(searched);
+    
+    }
+    
+  }
   const add_bill = (name, amount, billDate) => {
     const today = new Date(); 
     const Year = today.getFullYear();
@@ -67,11 +125,62 @@ function RecurrBill() {
       due: due
     }]);
   };
+  const update_Bill = (name, total,date) => {
+    setBugetArr((prev) =>
+      prev.map(items =>
+        items.name === editBillName
+          ? { ...items, name: name, amount: total, due:date, status:false }
+          : items
+      )
+    );
+    setEditBillName('');
+    setEditBillTotal('');
+    setEditBillDate('');
+  };
+  const delete_Bill = (name) => {
+    setBugetArr((prev) => prev.filter(item => item.name !== name));
+  };
  
-
+  
+  
+  
 
     return (
     <div className='col-span-4'>
+      {updateshowDialog && (
+        <dialog open className='fixed top-1/2 left-1/2 z-50  transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-xl shadow-xl w-1/3 max-w-md flex flex-col'>
+          <div className='flex items-center justify-between p-2'>
+            <h1 className='font-bold text-xl'>Update Bill</h1>
+            <button className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-gray-100" onClick={() => setupdateshowDialog(false)}>X</button>
+          </div>
+
+          <form className='flex flex-col p-2' onSubmit={(e) => {
+            e.preventDefault();
+            update_Bill(editBillName, parseInt(editBillTotal));
+            setupdateshowDialog(false);
+          }}>
+            <div className='mb-3'>
+              <label className='mr-2' htmlFor="name">Name:</label>
+              <input className='p-1' type="text" placeholder='Enter Bill Name' required value={editBillName} onChange={(e) => setEditBillName(e.target.value)} />
+            </div>
+
+            <div className='mb-3'>
+              <label className='mr-2' htmlFor="total">Allocated Bill:</label>
+              <input className='p-1' type="number" min={1} placeholder='Enter Allocated Bill' required value={editBillTotal} onChange={(e) => setEditBillTotal(e.target.value)} />
+            </div>
+
+            <div className='mb-3'>
+              <label className='mr-2' htmlFor="total">Due Date:</label>
+              <input className='p-1' type='date'  required onChange={(e) => setEditBillDate(e.target.value)} />
+            </div>
+
+            <button className='w-full bg-blue-600 text-white font-semibold hover:cursor-pointer p-1 rounded-lg' type="submit">Update</button>
+          </form>
+        </dialog>
+      )}
+
+
+
     {showDialog && (
         <dialog open className='fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-xl shadow-xl w-1/3 max-w-md flex flex-col'>
           <div className='flex items-center justify-between p-2'>
@@ -110,7 +219,7 @@ function RecurrBill() {
           {showSortOptions && (
           <select
           className="cursor-pointer"
-    
+          onChange={(e) => handle_sort(e.target.value)}
         >
           <option value="amount-asc">Amount (Low to High)</option>
           <option value="amount-desc">Amount (High to Low)</option>
@@ -123,15 +232,24 @@ function RecurrBill() {
         </select>
         
           )}
-          <form>
+          <form
+           onSubmit={(e)=>{
+            e.preventDefault()
+            handle_search(searchedTerm);
+            }}>
           <input
             type="text"
             placeholder="Search by Name"
-            
+            value={searchedTerm}
+            onChange={(e)=> setterm(e.target.value)}
             className="p-1  focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-gray-900 rounded-lg"
           />
         </form>
-        <button className="bg-green-700 text-white p-2 ml-2 rounded-lg cursor-pointer hover:bg-green-800">Clear</button>
+        <button className="bg-green-700 text-white p-2 ml-2 rounded-lg cursor-pointer hover:bg-green-800"
+          onClick={()=>{
+          
+          setterm("")}}
+        >Clear</button>
         <button className="bg-blue-700 text-white p-2 ml-2 rounded-lg cursor-pointer hover:bg-blue-800 px-6"
         onClick={()=>setshowDialog(true)}
         >Add Bill</button>
@@ -159,11 +277,22 @@ function RecurrBill() {
             );
             setBillArr(updatedBills);
           }}/>
-            <p className='text-lg'>{item.name}</p>
+            <p className='text-lg mr-2 '>{item.name}</p>
+            <p className='text-sm'>{item.due}</p>
           </div>
           <div className='flex items-center'>
-            <p className='mr-2 text-sm'>{item.due}</p>
-            <p className='text-sm'>{item.amount}</p>
+            <p className=' mr-2'>{item.amount}</p>
+            
+            <img src={delete_btn} alt="delete button"
+            onClick={() => delete_Bill(item.name)}
+            className='mr-2 h-5 w-auto hover:cursor-pointer'  />
+            <img src={edit} alt="edit button"
+            onClick={()=> {setupdateshowDialog(true)
+            setEditBillName(item.name);
+            setEditBillTotal(item.amount);
+            
+            }}
+            className='mr-2 h-5 w-auto hover:cursor-pointer' />
           </div>
           </div>
           
