@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBar from '../Utils/ProgressBar.jsx';
-import ErrorPopup from '../Utils/ErrorPopUp.jsx';
+import ErrorPopup from '../Utils/ErrorPopup.jsx';
 import delete_btn from '../assets/dustbin.png';
 import edit from '../assets/pen.png';
 import { AppContext } from '../Context/AppContext.jsx'; 
